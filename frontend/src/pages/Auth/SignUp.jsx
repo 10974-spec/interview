@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Input from '../../components/Inputs/Input';
+import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector';
 
 const SignUp = ({setCurrentPage}) => {
   const [profilePic, setProfilePic] = useState(null);
@@ -27,6 +28,10 @@ const SignUp = ({setCurrentPage}) => {
     <p className="text-xs text-slate-700 mt-[5px] mb-6">Join Us today by entering your details below</p>
 
     <form onSubmit={handleSignUp}>
+
+
+      <ProfilePhotoSelector image={profilePic} setImage={setProfilePic}/>
+
       <div className='grid grid-cols-1 md:grid-cols-1 gap-2'>
           <Input
           value={fullName}
