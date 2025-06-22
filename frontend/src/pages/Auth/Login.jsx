@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Input from '../../components/Inputs/Input';
+import { validateEmail } from '../../utils/helper';
 
 const Login = ({setCurrentPage}) => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,31 @@ const Login = ({setCurrentPage}) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!validateEmail(email)) {
+      setError("*Please enter a valid email");
+      return;
+    }
+
+    if(!password){
+      setError("*Password is required");
+      return;
+    }
+
+    setError("");
+
+
+    // ********LOGIN API CALL*********//
+    try{
+
+    }catch(error){
+      if(error.response && error.response.data.message){
+        setError(error.response.data.message);
+      }else{
+        setError("Something Went Wrong Plz Try Again.");
+      }
+    }
+
   }
 
   return <div className='w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center'>
