@@ -24,7 +24,7 @@ const Login = ({setCurrentPage}) => {
       onChange={({target}) => setEmail(target.value)} 
       label="Email Address"
       placeholder="example@example.com"
-      type="email"
+      type="text"
      />
      <Input
      value={password}
