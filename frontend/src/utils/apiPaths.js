@@ -7,7 +7,7 @@ export const API_PATHS = {
         GET_PROFILE: "/api/auth/profile",
     },
     IMAGE: {
-        UPLOAD_IMAGE: "/api/image/upload-image",
+        UPLOAD_IMAGE: "/api/auth/upload-image",
     },
 
     AI:{
