@@ -8,9 +8,12 @@ import Dashboard from './pages/Home/Dashboard'
 import InterviewPrep from './pages/InterviewPrep/interviewPrep'
 import Login from './pages/Auth/Login'
 import SignUp from './pages/Auth/SignUp'
+import UserProvider from './context/userContext'
 
 const App = () => {
+  
   return (
+    <UserProvider>
     <div>
       <Router>
         <Toaster />
@@ -33,6 +36,7 @@ const App = () => {
         }} 
       />
     </div>
+    </UserProvider>
   )
 }
 
