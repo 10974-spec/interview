@@ -10,6 +10,10 @@ exports.createSession = async (req, res) => {
     try{
 
         const {role, experience,topicsToFocus, description, questions} = req.body;
+
+        if (!req.user) {
+  return res.status(401).json({ success: false, message: "Not authenticated" });
+}
         const userId = req.user._id; // Assuming you have a middleware setting req.user
 
 
