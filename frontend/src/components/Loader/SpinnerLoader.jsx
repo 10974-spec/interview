@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
 const SpinnerLoader = () => {
   return (
-    <div>SpinnerLoader</div>
-  )
-}
+    <div className="spinner w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+  );
+};
 
-export default SpinnerLoader
+export default SpinnerLoader;

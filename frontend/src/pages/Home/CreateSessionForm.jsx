@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/Inputs/Input";
+import SpinnerLoader from "../../components/Loader/SpinnerLoader";
+import axios from "axios";
+import axiosInstance from "../../utils/axiosinstance";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const CreateSessionForm = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +38,39 @@ const CreateSessionForm = () => {
     }
 
     setError("");
+    setIsLoading(true);
+
+    try {
+      //  =======CALL AI API TO GENERATE QUESTIONS====== //
+      const  aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS,
+        {
+            role,
+            experience,
+            topicsToFocus,
+            numberOfQuestions: 10,
+        }
+      );
+      // =======SHOULD BE ARRAY LIKE [{QUESTION, ANSWER}, ...]======= //
+      const generateQuestions = aiResponse.data;
+
+      const response = await axiosInstance.post(API_PATHS.SESSION.CREATE,{
+        ...formData,
+        questions: generateQuestions,
+      });
+
+      if (response.data?.session?._id) {
+        navigate(`/interview-prep/${response.data.session._id}`);
+      } else{
+        setError("Something Went Wrong. Please try again.");
+      }
+      
+    }catch(error){
+      if (error?.response && error.response.data.message) {
+        setError(error.response.data.message);
+      }
+    }  finally{
+        setIsLoading(false);
+      }
   };
 
   return (
@@ -76,7 +113,7 @@ const CreateSessionForm = () => {
         />
         {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
         <button type="submit" disabled={isLoading} className="btn-primary w-full mt-2">
-          {isLoading && <SpinnerLoader/>}Create Session
+          {isLoading && <SpinnerLoader/>} Create Session
         </button>
       </form>
     </div>
