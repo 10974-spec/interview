@@ -35,7 +35,7 @@ const generateInterviewQuestions = async (req,res) =>{
         .replace(/```$/, "")//remove ``` from end
         .trim();//remove any trailing spaces
 
-
+console.log("🧠 Gemini Raw Text:", rawText);
         //****Parse the cleaned text as JSON****/
         const data = JSON.parse(cleanedText);
 

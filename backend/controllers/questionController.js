@@ -19,13 +19,14 @@ exports.addQuestionsToSession = async(req,res) =>{
         }
 
         //*****create new questions *****//
-        const createdQuestions = await Question.insertMany;
+       const createdQuestions = await Question.insertMany(
+  questions.map((q) => ({
+    session: sessionId,
+    question: q.question,
+    answer: q.answer,
+  }))
+);
 
-            questions.map((q) =>({
-                session: sessionId,
-                question: q.question,
-                answer: q.answer,
-            }));
 
          //***UPDATE SESSION TO INCLUDE NEW QUESTION IDS ***//   
             session.questions.push(...createdQuestions.map((q) => q._id));
