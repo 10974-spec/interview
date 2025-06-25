@@ -94,7 +94,47 @@ const InterviewPrep = () => {
 
 
   // ===ADD MORE QUESTIONS TO A SESSION=== //
-  const uploadMoreQuestions = async () => {};
+  const uploadMoreQuestions = async () => {
+    try {
+      setIsUpdateLoader(true);
+
+      //*****CALL AI API TO GENERATE MORE QUESTIONS*****//
+      const aiResponse = await axiosInstance.post(
+        API_PATHS.AI.GENERATE_QUESTIONS,
+        {
+          role: sessionData?.role,
+          topicsToFocus: sessionData?.topicsToFocus,
+          experience: sessionData?.experience,
+          numberOfQuestions: 10,
+        }
+      );
+
+      //*****SHOULD BE AN ARRAY LIKE [{question, answer},...] */
+      const generatedQuestions = aiResponse.data;//error.questions
+      const response = await axiosInstance.post(
+        API_PATHS.QUESTIONS.ADD_TO_SESSION,
+        {
+          sessionId,
+          questions: generatedQuestions,
+        }
+      );
+      
+
+      if (response.data) {
+        toast.success("Added More Q&A!!");
+        fetchSessionDetailsById();
+      }
+
+    }catch(error){
+      if (error.response && error.response.data.message){
+        setError(error.response.data.message)
+      }else {
+        setError("Failed to add more questions, Try again later")
+      }
+    }finally{
+      setIsUpdateLoader(false);
+    }
+  };
 
   useEffect(() => {
     if (sessionId){
@@ -153,27 +193,27 @@ const InterviewPrep = () => {
                           isPinned={data?.isPinned}
                           onTogglePin={() => toggleQuestionPinStatus(data._id)}
                         />
-                        </>
+                      
 
 
                           {!isLoading && 
                             sessionData?.questions?.length === index + 1 && (
                               <div className="flex items-center justify-center mt-5">
                                 <button
-                                 className=""
+                                 className="flex items-center gap-3 text-sm text-white font-medium bg-black px-5 py-2  mr-2 rounded text-nowrap cursor-pointer"
                                  disabled={isLoading || isUpdateLoader}
                                  onClick={uploadMoreQuestions}
                                  >
                                   {isUpdateLoader ? <SpinnerLoader/> 
                                   : (
-                                    <LuListCollapse className=''/>
+                                    <LuListCollapse className='text-lg'/>
                                   )}{""}
                                   Load More
                                 </button>
                               </div>
                             )
                           }
-
+                      </>
                       </motion.div>
                     )
                   })}
