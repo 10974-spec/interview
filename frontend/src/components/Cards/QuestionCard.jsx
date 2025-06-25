@@ -30,7 +30,7 @@ const QuestionCard = ({
     }
 
   return <>
-   <div className="bg-white rounded-lg mb-4 overflow-hidden py-4 px-5 shadow-xl shadow-gray-100/70 border border-gray-600/50 group">
+   <div className="bg-white rounded-lg mb-4 overflow-hidden py-4 px-5 shadow-xl shadow-gray-100/70 border border-gray-100/50 group">
     <div className="flex items-start justify-between cursor-pointer">
         <div className="flex items-start gap-3.5">
             <span className="text-xs md:text-[15px] font-semibold text-gray-400 leading-[18px]">
@@ -85,7 +85,7 @@ const QuestionCard = ({
     style={{ maxHeight: `${height}px`}}
     >
         <div 
-        className="mt-4 text-gray-700 bg-gray-200 py-3 rounded-lg px-3"
+        className="mt-4 text-gray-700 bg-gray-50 py-3 rounded-lg px-3"
         ref={contentRef}
         >
             <AIResponsePreview content={answer} />

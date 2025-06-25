@@ -10,6 +10,9 @@ import RoleInfoHeader from './components/RoleInfoHeader'
 import axiosInstance from '../../utils/axiosinstance'
 import { API_PATHS } from '../../utils/apiPaths'
 import QuestionCard from '../../components/Cards/QuestionCard'
+import AIResponsePreview from './components/AIResponsePreview'
+import Drawer from '../../components/Drawer'
+import SkeletonLoader from '../../components/Loader/SkeletonLoader'
 
 const InterviewPrep = () => {
 
@@ -23,7 +26,7 @@ const InterviewPrep = () => {
   const [explanation, setExplanation] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isUpdateLoader, setIsUpdateLoader] = useState(false);
 
   // =====FETCH SESSION DATA BY SESSION ID===== //
 
@@ -41,10 +44,53 @@ const InterviewPrep = () => {
   };
 
   // =====GENERATE CONCEPT EXPLANATIONS===== //
-  const generateConceptExplanations = async (question) => {};
+  const generateConceptExplanations = async (question) => {
+    try {
+      setErrorMsg("");
+      setExplanation(null);
+      setIsLoading(true);
+      setOpenLearnMoreDrawer(true)
+      const response = await axiosInstance.post(
+        API_PATHS.AI.GENERATE_EXPLANATION,
+        {
+          question,
+        }
+      );
+
+      if (response.data) {
+        setExplanation(response.data);
+      }
+
+    }catch(error){
+      setExplanation(null)
+      setErrorMsg("Failed To generate Explanation, Try again later")
+      console.log("Error:", error);
+      
+    }finally{
+      setIsLoading(false);
+    }
+  };
 
   // ===Pin Question=== //
-  const toggleQuestionPinStatus = async (questionId) => {};
+  const toggleQuestionPinStatus = async (questionId) => {
+    try {
+      const response = await axiosInstance.post(
+        API_PATHS.QUESTIONS.PIN(questionId),
+      );
+
+      console.log(response);
+
+      if(response.data && response.data.question){
+        //=====Toast.success("question pinned successfully")
+        fetchSessionDetailsById();
+        toast.success("question pinned successfully")
+      }
+      
+    }catch(error){
+      console.log("Error:",error);
+      
+    }
+  };
 
 
   // ===ADD MORE QUESTIONS TO A SESSION=== //
@@ -108,12 +154,50 @@ const InterviewPrep = () => {
                           onTogglePin={() => toggleQuestionPinStatus(data._id)}
                         />
                         </>
+
+
+                          {!isLoading && 
+                            sessionData?.questions?.length === index + 1 && (
+                              <div className="flex items-center justify-center mt-5">
+                                <button
+                                 className=""
+                                 disabled={isLoading || isUpdateLoader}
+                                 onClick={uploadMoreQuestions}
+                                 >
+                                  {isUpdateLoader ? <SpinnerLoader/> 
+                                  : (
+                                    <LuListCollapse className=''/>
+                                  )}{""}
+                                  Load More
+                                </button>
+                              </div>
+                            )
+                          }
+
                       </motion.div>
                     )
                   })}
                 </AnimatePresence>
               </div>
         </div>
+
+          <Drawer
+           isOpen={openLearnMoreDrawer}
+           onClose={() => setOpenLearnMoreDrawer(false)}
+           title={!isLoading && explanation?.title}
+           >
+            {errorMsg && (
+              <p className="flex gap-2 text-sm text-amber-600 font-medium">
+                <LuCircleAlert className='mt-1'/> {errorMsg}
+              </p>
+            )}
+            {isLoading && <SkeletonLoader/>}
+            {
+              !isLoading && explanation && (
+                <AIResponsePreview content={explanation?.explanation}/>
+              )
+            }
+            </Drawer>       
        </div>
     </DashboardLayout>
   )
