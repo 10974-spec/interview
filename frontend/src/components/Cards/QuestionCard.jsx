@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LuChevronDown, LuPin , LuPinOff, LuSparkles } from 'react-icons/lu'
+import AIResponsePreview from '../../pages/InterviewPrep/components/AIResponsePreview';
 
 const QuestionCard = ({ 
     question, 
@@ -84,7 +85,7 @@ const QuestionCard = ({
     style={{ maxHeight: `${height}px`}}
     >
         <div 
-        className="mt-4 text-gray-700 bg-gray-200 py-3 rounded-lg "
+        className="mt-4 text-gray-700 bg-gray-200 py-3 rounded-lg px-3"
         ref={contentRef}
         >
             <AIResponsePreview content={answer} />
